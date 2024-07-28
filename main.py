@@ -1,5 +1,5 @@
 import string
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 
 from model import convert, predict
@@ -16,13 +16,13 @@ class StockOut(StockIn):
 def get_status():
     return {"status": "healthy"}
 
-@app.post("/forecast", response_model=StockOut, status_code=200)
-def get_forecast(stock: string):
+@app.get("/forecast", response_model=StockOut, status_code=200)
+def get_prediction(stock: str = Query(..., description="Stock ticker symbol", min_length=1, max_length=5)):
 
-    forecast_list = predict(stock)
+    prediction_list = predict(stock)
 
-    if not forecast_list:
+    if not prediction_list:
         raise HTTPException(status_code=400, detail="Model not found.")
 
-    response_object = {"ticker": stock, "forecast": convert(forecast_list)}
+    response_object = {"ticker": stock, "forecast": convert(prediction_list)}
     return response_object
