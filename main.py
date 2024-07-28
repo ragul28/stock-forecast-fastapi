@@ -27,7 +27,7 @@ async def train_model(payload: TrainRequest):
         train(ticker=payload.ticker, start_date=payload.start_date)
         return {"status": "success", "message": f"Model trained for {payload.ticker}"}
     except Exception as e:
-        raise HTTPException(status_code=500)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/forecast", response_model=StockOut, status_code=200)
 def get_prediction(stock: str = Query(..., description="Stock ticker symbol", min_length=1, max_length=5)):
