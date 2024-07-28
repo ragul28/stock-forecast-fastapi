@@ -19,6 +19,16 @@ python model.py train
 uvicorn main:app --reload --workers 1 --host 127.0.0.1 --port 8080
 ```
 
+## Docker setup
+
+Build & run service as container
+```sh
+docker build -t stock-forecast-api:v1 .
+docker run -it -p 8080:8080 stock-forecast-api:v1
+```
+
+## Api endpoint
+
 * Trigger the model training for stock
 ```sh
 curl -X POST http://localhost:8080/train \
