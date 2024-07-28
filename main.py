@@ -25,7 +25,7 @@ def get_status():
 async def train_model(payload: TrainRequest):
     try:
         train(ticker=payload.ticker, start_date=payload.start_date)
-        return {"status": "success"}
+        return {"status": "success", "message": f"Model trained for {payload.ticker}"}
     except Exception as e:
         raise HTTPException(status_code=500)
 
