@@ -1,8 +1,9 @@
 import string
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from model import convert, predict
+from model import convert, predict, train
 
 app = FastAPI()
 
@@ -12,9 +13,21 @@ class StockIn(BaseModel):
 class StockOut(StockIn):
     forecast: dict
 
+class TrainRequest(BaseModel):
+    ticker: str
+    start_date: str
+
 @app.get("/status")
 def get_status():
     return {"status": "healthy"}
+
+@app.post("/train", status_code=200, response_class=JSONResponse)
+async def train_model(payload: TrainRequest):
+    try:
+        train(ticker=payload.ticker, start_date=payload.start_date)
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500)
 
 @app.get("/forecast", response_model=StockOut, status_code=200)
 def get_prediction(stock: str = Query(..., description="Stock ticker symbol", min_length=1, max_length=5)):
