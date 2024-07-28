@@ -19,7 +19,14 @@ python model.py train
 uvicorn main:app --reload --workers 1 --host 127.0.0.1 --port 8080
 ```
 
-* Trigger the forcast api
+* Trigger the model training for stock
+```sh
+curl -X POST http://localhost:8080/train \
+    -H "Content-Type: application/json" \
+    -d '{"stock": "NVDA", "start_date": "2020-01-01"}'
+```
+
+* Trigger the forecast api
 ```sh
 curl http://localhost:8080/forecast?stock=NVDA
 ```
